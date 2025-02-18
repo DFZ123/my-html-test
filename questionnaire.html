@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>正经人</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f9f9f9;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      text-align: center;
+      width: 100vw;
+      height: 100vh;
+    }
+    #Overlay{
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1;
+    }
+    #agreeOverlay{
+      display: none;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1;
+    }
+    #okButton{
+      margin-top: 50px;
+      margin-left: calc(50vw - 31.5px);
+    }
+    #backButton{
+      margin-top: 50px;
+      margin-left: calc(50vw - 31.5px);
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .buttons {
+      width: 100vw;
+      height: 80vh;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    #agree {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    #disagree {
+      background-color: #f44336;
+      color: white;
+    }
+    #sad{
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>樊乐乐是个很赞的人嘛？</h1>
+    <div class="buttons">
+      <button id="agree">同意</button>
+      <button id="disagree">不同意</button>
+    </div>
+    <div id="sad">啊啊啊啊，我生气了！</div>
+    <!-- 遮罩 -->
+  </div>
+  <div id="Overlay">
+    <h2 style="text-align: center;color: aliceblue;">答案错误，请重新回答！</h2>
+    <button id="okButton">OK</button>
+  </div>
+  <div id="agreeOverlay">
+    <h2 style="text-align: center;color: aliceblue;" id="agreeContent"></h2>
+    <h2 style="text-align: center;color: aliceblue;">我也这么觉得😎</h2>
+    <button id="backButton">返回</button>
+  </div>
+
+  <script>
+    // 获取按钮元素
+    const agreeButton = document.getElementById('agree');
+    const disagreeButton = document.getElementById('disagree');
+    const Overlay = document.getElementById('Overlay');
+    const container = document.getElementsByClassName("container")[0];
+    const agreeOverlay = document.getElementById("agreeOverlay");
+
+    /* 动态设定同意页面内容 */
+    const agreeContent1 = "真有眼光！🥰"
+    const agreeContent2 = "矮~这就对了嘛！🥰"
+    const agreeContent = document.getElementById("agreeContent");
+
+    // 判断是否点击同意按钮
+    let disagree = false
+
+    // 初始化同意按钮的缩放比例
+    let scale = 1;
+
+    // 不同意按钮点击事件
+    disagreeButton.addEventListener('click', () => {
+      container.style.display = 'none';
+      Overlay.style.display = 'block';
+      disagree = true;
+      // 每次点击放大 0.5 倍
+      // scale += 0.5;
+      // agreeButton.style.transform = `scale(${scale})`;
+      // if (getScaleValue(agreeButton) > 6.5) {
+      //   const sad = document.getElementById('sad');
+      //   sad.style.display = 'block';
+      // }
+    });
+    // 同意按钮点击事件
+    agreeButton.addEventListener('click', () => {
+      console.log("disagreedisagree",disagree);
+      if (disagree) {
+        agreeContent.innerHTML = agreeContent2;
+      }else{
+        agreeContent.innerHTML = agreeContent1;
+      }
+      agreeOverlay.style.display = 'block';
+      container.style.display = 'none';
+      disagree = false
+    });
+    /* ok按钮 */
+    const okButton = document.getElementById('okButton');
+    okButton.addEventListener('click', () => {
+      Overlay.style.display = 'none';
+      container.style.display = 'block';
+    });
+    /* 获取缩放比例 */
+    function getScaleValue(element) {
+      const transform = window.getComputedStyle(element).transform;
+      
+      // 如果 transform 为空，或者没有使用 scale
+      if (transform === 'none') {
+        return 1;  // 没有缩放，返回默认值1
+      }
+
+      // 解析 matrix 形式的 transform
+      const matrix = transform.match(/matrix\(([^)]+)\)/);
+      if (matrix) {
+        const values = matrix[1].split(',').map(value => parseFloat(value.trim()));
+        return values[0]; // matrix(a, b, c, d, tx, ty)，a 和 d 是缩放值
+      }
+
+      // 如果使用了 scale(x)
+      const scale = transform.match(/scale\(([^)]+)\)/);
+      if (scale) {
+        return parseFloat(scale[1]);
+      }
+
+      return 1; // 默认返回 1
+    }
+    
+    /* 同意后的返回按钮 */
+    const backButton = document.getElementById('backButton');
+    backButton.addEventListener('click', () => {
+      agreeOverlay.style.display = 'none';
+      container.style.display = 'block';
+    });
+  </script>
+</body>
+</html>
